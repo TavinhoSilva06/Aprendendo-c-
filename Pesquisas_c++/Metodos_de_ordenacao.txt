@@ -1,0 +1,172 @@
+🔹 1. Bubble Sort
+
+É o mais simples de todos.
+Funciona trocando elementos vizinhos repetidamente até que a lista esteja ordenada.
+É ineficiente para listas grandes (complexidade O(n²)).
+Bom para fins didáticos.
+
+#include <iostream>
+using namespace std;
+
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n-1; i++) {
+        for (int j = 0; j < n-i-1; j++) {
+            if (arr[j] > arr[j+1]) {
+                swap(arr[j], arr[j+1]);
+            }
+        }
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 8, 4, 2};
+    int n = 5;
+
+    bubbleSort(arr, n);
+
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+}
+
+
+🔹 2. Quick Sort
+
+Baseado na estratégia Dividir para Conquistar.
+Escolhe um pivô, reorganiza o array de forma que elementos menores fiquem antes do pivô e maiores depois.
+Aplica recursivamente nas duas partes.
+Muito eficiente na prática (O(n log n) em média, mas pode ser O(n²) no pior caso se escolher pivô ruim).
+
+
+#include <iostream>
+using namespace std;
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i+1], arr[high]);
+    return i+1;
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi-1);
+        quickSort(arr, pi+1, high);
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 8, 4, 2};
+    int n = 5;
+
+    quickSort(arr, 0, n-1);
+
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+}
+
+
+🔹 3. Merge Sort
+
+Também segue Dividir para Conquistar.
+Divide o array em duas metades, ordena cada uma recursivamente e depois funde (merge) as duas listas já ordenadas.
+Sempre tem complexidade O(n log n).
+Mais estável que o QuickSort (mantém ordem relativa de iguais).
+
+
+#include <iostream>
+using namespace std;
+
+void merge(int arr[], int l, int m, int r) {
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    int L[n1], R[n2];
+
+    for (int i = 0; i < n1; i++) L[i] = arr[l+i];
+    for (int j = 0; j < n2; j++) R[j] = arr[m+1+j];
+
+    int i = 0, j = 0, k = l;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else arr[k++] = R[j++];
+    }
+
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSort(int arr[], int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        mergeSort(arr, l, m);
+        mergeSort(arr, m+1, r);
+        merge(arr, l, m, r);
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 8, 4, 2};
+    int n = 5;
+
+    mergeSort(arr, 0, n-1);
+
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+}
+
+
+🔹 4. Heap Sort
+
+Usa a estrutura de heap (uma árvore binária quase completa).
+Primeiro transforma o array em um heap máximo.
+Depois, remove o maior elemento (raiz) e coloca no final, repetindo até ordenar.
+Complexidade O(n log n) em todos os casos.
+
+
+#include <iostream>
+using namespace std;
+
+void heapify(int arr[], int n, int i) {
+    int largest = i;
+    int left = 2*i + 1;
+    int right = 2*i + 2;
+
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    if (largest != i) {
+        swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);
+    }
+}
+
+void heapSort(int arr[], int n) {
+    for (int i = n/2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+
+    for (int i = n-1; i >= 0; i--) {
+        swap(arr[0], arr[i]);
+        heapify(arr, i, 0);
+    }
+}
+
+int main() {
+    int arr[] = {5, 3, 8, 4, 2};
+    int n = 5;
+
+    heapSort(arr, n);
+
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+}
