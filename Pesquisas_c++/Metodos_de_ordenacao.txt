@@ -11,8 +11,8 @@ using namespace std;
 void bubbleSort(int arr[], int n) {
     for (int i = 0; i < n-1; i++) {
         for (int j = 0; j < n-i-1; j++) {
-            if (arr[j] > arr[j+1]) {
-                swap(arr[j], arr[j+1]);
+            if (arr[j] > arr[j+1]) { // Vai verificar se o atual elemento do array é maior que o próximo
+                swap(arr[j], arr[j+1]); // Se for maior, ele trocará o valor desses elementos (no caso, o antigo valor do atual, indo para a direita)
             }
         }
     }
@@ -20,7 +20,7 @@ void bubbleSort(int arr[], int n) {
 
 int main() {
     int arr[] = {5, 3, 8, 4, 2};
-    int n = 5;
+    int n = 5; // tamanho do array
 
     bubbleSort(arr, n);
 
@@ -42,31 +42,32 @@ using namespace std;
 
 int partition(int arr[], int low, int high) {
     int pivot = arr[high];
-    int i = low - 1;
+    int i = low - 1; // marca a posição do último elemento menor que o pivô
 
     for (int j = low; j < high; j++) {
         if (arr[j] < pivot) {
-            i++;
-            swap(arr[i], arr[j]);
+            i++; // A comparação com o pivô SEMPRE começa pelo indice 0; 
+            swap(arr[i], arr[j]); // coloca arr[j] logo após os menores já encontrados.
         }
     }
-    swap(arr[i+1], arr[high]);
-    return i+1;
+    swap(arr[i+1], arr[high]); // coloca o pivô na posição i+1, que é o lugar correto.
+    return i+1; // retorna a posição final do pivô.
 }
 
 void quickSort(int arr[], int low, int high) {
-    if (low < high) {
-        int pi = partition(arr, low, high);
-        quickSort(arr, low, pi-1);
-        quickSort(arr, pi+1, high);
+    if (low < high) { // só vai fazer se houver pelo menos 2 elementos
+        int pi = partition(arr, low, high); // chama a função de partição e pega a posição do pivô
+        quickSort(arr, low, pi-1); // ordena a parte da esquerda do pivô (menores)
+        quickSort(arr, pi+1, high); // ordena a parte da direita do pivô (maiores ou iguais)
     }
 }
 
 int main() {
-    int arr[] = {5, 3, 8, 4, 2};
-    int n = 5;
+    int arr[] = {5, 3, 8, 4, 2}; // Pivô = 2 (indice 4)
+    int n = 5; 
 
-    quickSort(arr, 0, n-1);
+    quickSort(arr, 0, n-1); // ele chama a função quickSort, na qual será feito o seu algoritmo no array criado no main
+    //(arr): sendo o nome, (0): indice inicial, (n-1): indice final.
 
     for (int i = 0; i < n; i++)
         cout << arr[i] << " ";
@@ -85,30 +86,46 @@ Mais estável que o QuickSort (mantém ordem relativa de iguais).
 using namespace std;
 
 void merge(int arr[], int l, int m, int r) {
-    int n1 = m - l + 1;
-    int n2 = r - m;
+    int n1 = m - l + 1; // tamnho da primeira metade
+    int n2 = r - m; // tamanho da segunda metade 
 
     int L[n1], R[n2];
 
-    for (int i = 0; i < n1; i++) L[i] = arr[l+i];
-    for (int j = 0; j < n2; j++) R[j] = arr[m+1+j];
-
-    int i = 0, j = 0, k = l;
-    while (i < n1 && j < n2) {
-        if (L[i] <= R[j]) arr[k++] = L[i++];
-        else arr[k++] = R[j++];
+    for (int i = 0; i < n1; i++) {
+        L[i] = arr[l+i]; // copia a primeira metade para o l
+    }
+    
+    for (int j = 0; j < n2; j++) {
+        R[j] = arr[m+1+j]; // copia a segunda metade para o R
     }
 
-    while (i < n1) arr[k++] = L[i++];
-    while (j < n2) arr[k++] = R[j++];
+    int i = 0, j = 0, k = l; // i percorre l, j percorre o R e k irá copiar para o arr.
+    
+    while (i < n1 && j < n2) { // Comparação das duas metades já fundidas.
+        
+        if (L[i] <= R[j]) { // Se o proximo de L for menor ou igual, copia L e avança i e k
+            arr[k++] = L[i++];
+            }
+        
+        else { // Senão, copia para o R.
+            arr[k++] = R[j++];
+        }
+    }
+
+    while (i < n1) {
+        arr[k++] = L[i++]; // Copia o que sobrou de L (se houver)
+    }
+    while (j < n2) {
+        arr[k++] = R[j++]; // Copia o que sobrou de R (se houver também)
+    }
 }
 
-void mergeSort(int arr[], int l, int r) {
-    if (l < r) {
-        int m = l + (r - l) / 2;
-        mergeSort(arr, l, m);
-        mergeSort(arr, m+1, r);
-        merge(arr, l, m, r);
+void mergeSort(int arr[], int l, int r) { // Função que divide o array.
+    if (l < r) { // para continuar esta condição, tem que ter pelo menos 2 elementos
+        int m = l + (r - l) / 2; // Fórmula para calcular o meio do array.
+        mergeSort(arr, l, m); // Ordena a parte da esquerda 
+        mergeSort(arr, m+1, r); // Ordena a parte da direita
+        merge(arr, l, m, r); // Junta as duas partes ordenadas
     }
 }
 
@@ -122,48 +139,58 @@ int main() {
         cout << arr[i] << " ";
 }
 
-
 🔹 4. Heap Sort
 
 Usa a estrutura de heap (uma árvore binária quase completa).
 Primeiro transforma o array em um heap máximo.
 Depois, remove o maior elemento (raiz) e coloca no final, repetindo até ordenar.
-Complexidade O(n log n) em todos os casos.
+Complexidade O(n log n) em todos os casos.  
 
 
 #include <iostream>
 using namespace std;
 
 void heapify(int arr[], int n, int i) {
-    int largest = i;
-    int left = 2*i + 1;
-    int right = 2*i + 2;
+    int largest = i; // Assume que a raiz i é a maior
+    
+    //Representação das indices dos filhos em array
+    int left = 2*i + 1; // indice do filho esquerdo
+    int right = 2*i + 2; // indice do filho direito 
 
-    if (left < n && arr[left] > arr[largest])
+    if (left < n && arr[left] > arr[largest]) // Verifica se o filho esquerdo existe e se é maior que a raiz
         largest = left;
 
-    if (right < n && arr[right] > arr[largest])
+    if (right < n && arr[right] > arr[largest]) // Mesma condição para o lado direito
         largest = right;
 
-    if (largest != i) {
-        swap(arr[i], arr[largest]);
-        heapify(arr, n, largest);
+    if (largest != i) { // Condição que verifica se um dos filhos é maior que a raiz
+        swap(arr[i], arr[largest]); // troca o valor da raiz com o valor do filho.
+        heapify(arr, n, largest); // chama a função para consertar a subarvore afetada.
     }
 }
 
 void heapSort(int arr[], int n) {
-    for (int i = n/2 - 1; i >= 0; i--)
-        heapify(arr, n, i);
+    for (int i = n/2 - 1; i >= 0; i--) { // Constrói o heap máximo a partir do array desordenado
+    // Na qual, n/2 - 1, são os nós internos (que obtém pelo menos um filho).
+    // Exemplo: n = 8, 8/2 - 1 = 3, ou seja, o laço começa no indice 3 e vai até 0. Esses são os nós que tem filhos.
+        heapify(arr, n, i); // Garante que a subarvore com raiz i respeite a propriedade de heap máximo.
+    }
 
-    for (int i = n-1; i >= 0; i--) {
-        swap(arr[0], arr[i]);
-        heapify(arr, i, 0);
+    for (int i = n-1; i >= 0; i--) { // extrair o máximo e reduzir o heap.
+        swap(arr[0], arr[i]); // Colocar o maior (raiz) na posição final
+        heapify(arr, i, 0); // reconstroi o heap no restante do array para encontrar o próximo maior. 
     }
 }
 
 int main() {
     int arr[] = {5, 3, 8, 4, 2};
     int n = 5;
+    
+    // Arvore binária:  5 (índice 0)
+    //                   /       \
+   //               3 (1)        8 (2)
+   //               /    \          
+//              4 (3) 2 (4) 
 
     heapSort(arr, n);
 
